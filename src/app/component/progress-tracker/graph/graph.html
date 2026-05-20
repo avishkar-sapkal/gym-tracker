@@ -1,0 +1,80 @@
+<div class="p-4 sm:p-8 flex justify-center pb-8">
+  <div class="w-full max-w-4xl card-modern bg-white">
+    <!-- Header -->
+    <div class="mb-8 pb-6 border-b border-gray-200">
+      <h3 class="text-2xl font-bold text-neutral-900 flex items-center gap-2">
+        <i class="pi pi-chart-bar text-primary-600"></i>
+        Progress Analytics
+      </h3>
+      <p class="text-sm text-gray-500 mt-2">Track your performance over time</p>
+    </div>
+
+    <!-- Chart Container -->
+    <div *ngIf="chartData?.datasets?.length > 0 && chartData.datasets[0].data?.length > 0" 
+         class="animate-slideInUp">
+      <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg">
+        <p-chart 
+          type="bar" 
+          [data]="chartData" 
+          [options]="chartOptions"
+          [style]="{ 'height': '400px', 'width': '100%' }">
+        </p-chart>
+      </div>
+
+      <!-- Stats Summary Below Chart -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+        <div class="stat-card stat-card-blue">
+          <i class="pi pi-chart-line"></i>
+          <span class="stat-label">Max Weight</span>
+          <span class="stat-value">Loading...</span>
+        </div>
+        <div class="stat-card stat-card-green">
+          <i class="pi pi-arrow-up"></i>
+          <span class="stat-label">Improvement</span>
+          <span class="stat-value">+5%</span>
+        </div>
+        <div class="stat-card stat-card-orange">
+          <i class="pi pi-list"></i>
+          <span class="stat-label">Total Sets</span>
+          <span class="stat-value">{{ chartData.datasets[0].data.length }}</span>
+        </div>
+      </div>
+
+      <!-- Insights Section -->
+      <div class="mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+        <h4 class="font-bold text-neutral-900 mb-3 flex items-center gap-2">
+          <i class="pi pi-lightbulb text-yellow-500"></i>
+          Performance Insights
+        </h4>
+        <ul class="space-y-2 text-sm text-gray-700">
+          <li class="flex gap-2">
+            <i class="pi pi-check-circle text-green-600 text-xs mt-0.5 flex-shrink-0"></i>
+            <span>You're making consistent progress with your workout routine</span>
+          </li>
+          <li class="flex gap-2">
+            <i class="pi pi-check-circle text-green-600 text-xs mt-0.5 flex-shrink-0"></i>
+            <span>Keep tracking regularly to see better trends and patterns</span>
+          </li>
+          <li class="flex gap-2">
+            <i class="pi pi-check-circle text-green-600 text-xs mt-0.5 flex-shrink-0"></i>
+            <span>Review history tab for detailed workout records</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!chartData?.datasets || chartData?.datasets[0]?.data?.length === 0" 
+         class="flex flex-col items-center justify-center p-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+      <i class="pi pi-chart-bar text-4xl text-gray-400 mb-3"></i>
+      <p class="text-gray-500 font-medium text-center mb-2">
+        No graph data for <span class="font-bold text-neutral-900">{{ selectedExercise }}</span>
+      </p>
+      <p class="text-sm text-gray-400 mb-6">Log at least one workout to see your progress graph</p>
+      <a href="#" class="btn-primary">
+        <i class="pi pi-arrow-left"></i>
+        Go to Track
+      </a>
+    </div>
+  </div>
+</div>

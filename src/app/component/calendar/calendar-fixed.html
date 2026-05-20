@@ -1,0 +1,167 @@
+<div class="p-4 sm:p-6">
+    <div class="card-modern bg-white">
+        <!-- Header -->
+        <div class="mb-6 pb-6 border-b border-gray-200">
+            <h3 class="text-2xl font-bold text-neutral-900 flex items-center gap-2">
+                <i class="pi pi-calendar text-primary-600"></i>
+                Workout Calendar
+            </h3>
+            <p class="text-sm text-gray-500 mt-2">Click, drag, or create new events</p>
+        </div>
+
+        <!-- Calendar -->
+        <div class="calendar-container mb-8 animate-slideInUp">
+            <div class="h-auto sm:h-96 w-full">
+                <mbsc-eventcalendar #calendar 
+                    [data]="myEvents" 
+                    [clickToCreate]="true" 
+                    [dragToCreate]="true" 
+                    [dragToMove]="true"
+                    [dragToResize]="true" 
+                    [view]="myView" 
+                    (onEventClick)="handleEventClick($event)"
+                    (onEventCreated)="handleEventCreated($event)" 
+                    (onEventDeleted)="handleEventDeleted()"
+                    (onCellClick)="onDateChange($event)">
+                </mbsc-eventcalendar>
+            </div>
+        </div>
+
+        <!-- Event Color Legend -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+            <p class="text-sm font-semibold text-gray-700 mb-3">Event Colors</p>
+            <div class="flex flex-wrap gap-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded-full" style="background-color: #3b82f6;"></div>
+                    <span class="text-xs text-gray-600">Normal</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded-full" style="background-color: #10b981;"></div>
+                    <span class="text-xs text-gray-600">Completed</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded-full" style="background-color: #ef4444;"></div>
+                    <span class="text-xs text-gray-600">Important</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded-full" style="background-color: #f97316;"></div>
+                    <span class="text-xs text-gray-600">Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <mbsc-popup #addEditPopup 
+        display="bottom" 
+        [contentPadding]="false" 
+        [fullScreen]="false"
+        [scrollLock]="false"
+        [headerText]="isEdit ? 'Edit Workout' : 'New Workout'" 
+        [anchor]="addEditPopupAnchor"
+        [buttons]="isEdit ? editButtons: addButtons" 
+        [responsive]="addEditPopupResponsive"
+        (onClose)="handleAddEditPopupClose()">
+        
+        <div class="p-6 space-y-6 max-w-2xl">
+            <!-- Event Details Section -->
+            <div class="space-y-4">
+                <h4 class="font-semibold text-neutral-900 flex items-center gap-2">
+                    <i class="pi pi-pencil text-primary-600"></i>
+                    Workout Details
+                </h4>
+                
+                <mbsc-input 
+                    label="Title" 
+                    [(ngModel)]="eventTitle"
+                    placeholder="e.g., Chest Day">
+                </mbsc-input>
+                
+                <mbsc-textarea 
+                    label="Description" 
+                    [(ngModel)]="eventDescription"
+                    placeholder="Add workout notes, exercises, or goals...">
+                </mbsc-textarea>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Date & Time Section -->
+            <div class="space-y-4">
+                <h4 class="font-semibold text-neutral-900 flex items-center gap-2">
+                    <i class="pi pi-clock text-primary-600"></i>
+                    Date & Time
+                </h4>
+                
+                <div>
+                    <mbsc-datepicker 
+                        [(ngModel)]="eventDates" 
+                        select="range" 
+                        display="anchored" 
+                        [touchUi]="true"
+                        [showRangeLabels]="false" 
+                        [controls]="eventAllDay ? ['date'] : ['datetime']"
+                        [responsive]="eventAllDay ? { medium: { controls: ['calendar'], touchUi: false } } : { medium: { controls: ['calendar', 'time'], touchUi: false } }"
+                        [startInput]="startInput" 
+                        [endInput]="endInput">
+                    </mbsc-datepicker>
+
+                    <mbsc-input #startInput label="Starts"></mbsc-input>
+                    <mbsc-input #endInput label="Ends"></mbsc-input>
+                </div>
+
+                <!-- All Day Toggle -->
+                <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                    <input 
+                        type="checkbox" 
+                        [(ngModel)]="eventAllDay"
+                        id="allDayCheck"
+                        class="w-4 h-4 rounded text-primary-600">
+                    <label for="allDayCheck" class="text-sm font-medium text-gray-700 cursor-pointer">
+                        All day event
+                    </label>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Color Selection Section -->
+            <div class="space-y-4">
+                <h4 class="font-semibold text-neutral-900 flex items-center gap-2">
+                    <i class="pi pi-palette text-primary-600"></i>
+                    Event Color
+                </h4>
+
+                <div class="mbsc-flex flex-col gap-4">
+                    <!-- Color Grid -->
+                    <div class="grid grid-cols-6 gap-3">
+                        <ng-container *ngFor="let color of colors">
+                            <button
+                                type="button"
+                                (click)="handleColorChange({ target: { getAttribute: () => color } })"
+                                class="w-10 h-10 rounded-full cursor-pointer flex items-center justify-center transition-all duration-200 border-2 hover:scale-110"
+                                [ngClass]="eventColor === color ? 'border-gray-900 scale-110 shadow-lg' : 'border-gray-300 hover:border-gray-400'"
+                                [attr.data-value]="color"
+                                [ngStyle]="{ background: color }">
+                                <span *ngIf="eventColor === color" class="text-white text-lg">
+                                    <i class="pi pi-check"></i>
+                                </span>
+                            </button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <i class="pi pi-info-circle text-blue-600 mt-1 flex-shrink-0"></i>
+                <p class="text-sm text-gray-700">
+                    <span class="font-semibold block mb-1">Pro Tips:</span>
+                    • Use different colors to categorize your workouts<br>
+                    • Drag events to reschedule them<br>
+                    • Click events to edit or delete them
+                </p>
+            </div>
+        </div>
+    </mbsc-popup>
+</div>

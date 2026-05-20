@@ -1,0 +1,95 @@
+<div class="p-4 sm:p-8 flex justify-center mb-8">
+  <div class="w-full max-w-2xl animate-slideInUp">
+    <div class="card-modern bg-white">
+      <!-- Header -->
+      <div class="mb-8 pb-6 border-b border-gray-200">
+        <h3 class="text-2xl font-bold text-neutral-900 flex items-center gap-2">
+          <i class="pi pi-plus-circle text-primary-600"></i>
+          Log Your Workout
+        </h3>
+        <p class="text-sm text-gray-500 mt-2">Record your sets, weights, and reps</p>
+      </div>
+
+      <form class="space-y-6" (ngSubmit)="saveAllRows()">
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b-2 border-gray-300 bg-gray-50">
+                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Set</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Weight (kg)</th>
+                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Reps</th>
+                <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of rows; let i = index" 
+                  class="border-b border-gray-200 hover:bg-blue-50 transition-colors">
+                <td class="px-4 py-4">
+                  <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-100 text-primary-600 font-semibold">
+                    {{ i + 1 }}
+                  </div>
+                </td>
+                <td class="px-4 py-4">
+                  <input
+                    type="number"
+                    [(ngModel)]="row.weight"
+                    name="weight{{ i }}"
+                    placeholder="e.g., 50"
+                    class="w-full sm:w-32 px-3 py-2 text-center border-2 border-gray-200 rounded-lg 
+                           focus:border-primary-500 focus:ring-2 focus:ring-primary-100
+                           transition-all font-semibold">
+                </td>
+                <td class="px-4 py-4">
+                  <input
+                    type="number"
+                    [(ngModel)]="row.reps"
+                    name="reps{{ i }}"
+                    placeholder="e.g., 10"
+                    class="w-full sm:w-24 px-3 py-2 text-center border-2 border-gray-200 rounded-lg 
+                           focus:border-primary-500 focus:ring-2 focus:ring-primary-100
+                           transition-all font-semibold">
+                </td>
+                <td class="px-4 py-4 text-center">
+                  <button 
+                    type="button"
+                    (click)="deleteRow(i)"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-600
+                           hover:bg-red-100 transition-colors">
+                    <i class="pi pi-trash text-sm"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center pt-6">
+          <button 
+            type="button" 
+            (click)="addRow()"
+            class="btn-secondary flex items-center justify-center gap-2">
+            <i class="pi pi-plus"></i>
+            <span>Add Set</span>
+          </button>
+          
+          <button 
+            type="submit" 
+            class="btn-primary flex items-center justify-center gap-2">
+            <i class="pi pi-check"></i>
+            <span>Save Workout</span>
+          </button>
+        </div>
+
+        <!-- Info Badge -->
+        <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <i class="pi pi-info-circle text-blue-600"></i>
+          <p class="text-sm text-gray-700">
+            <span class="font-semibold">Pro tip:</span> Log your workouts immediately after completing them for accurate tracking
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

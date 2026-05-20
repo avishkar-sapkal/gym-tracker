@@ -1,0 +1,8 @@
+.exercise-card {
+  background-color: white;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.exercise-card:hover {
+  background-color: #eaeef2;
+}

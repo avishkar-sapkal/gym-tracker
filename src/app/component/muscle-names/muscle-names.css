@@ -1,0 +1,9 @@
+.custom-dialog .p-dialog-header {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+}
+
+.custom-dialog .p-dialog-title {
+  color: white;
+}

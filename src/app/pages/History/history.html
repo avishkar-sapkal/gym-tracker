@@ -1,0 +1,93 @@
+<div class="min-h-screen flex flex-col bg-gray-50">
+  <app-header></app-header>
+
+  <div class="flex-1 mt-6 sm:mt-10 text-center px-4">
+
+    <!-- <pre><code>{{historyData | json}}</code></pre> -->
+    <!-- <pre><code>{{selectedDateObj | json}}</code></pre> -->
+
+    <!-- Selected Date -->
+    <h1 class="text-2xl sm:text-4xl font-extrabold mb-6 sm:mb-8 text-gray-800">
+      {{ selectedDate }}
+    </h1>
+
+    <!-- Add data -->
+    <ng-container *ngIf="selectedDateObj <= today">
+      <div *ngIf="historyData.length === 0">
+        <button (click)="addData()" class="bg-blue-200 rounded p-3 cursor-pointer">
+          Add Data
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Check for future date -->
+    <ng-container *ngIf="selectedDateObj <= today; else future">
+
+      <!-- Exercise Grid -->
+      <div class="flex justify-center" *ngIf="historyData.length > 0">
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-3xl w-full">
+
+          <li *ngFor="let item of historyData; let i = index" class="bg-white rounded-xl shadow-sm sm:shadow-md
+                     hover:shadow-lg transition-shadow duration-300">
+
+            <!-- Exercise Card -->
+            <div class="p-4 sm:p-5 cursor-pointer flex justify-between items-center" (click)="item.show = !item.show">
+              <!-- <span class="font-semibold text-sm sm:text-lg text-gray-700 text-left">
+                {{ i + 1 }}. {{ item.exercise }}
+              </span> -->
+
+              <span class="line-clamp-2"> {{ i + 1 }}. {{ item.exercise }}</span>
+
+              <!-- Optional chevron -->
+              <i class="pi pi-chevron-down text-gray-400 text-sm sm:text-base"
+                [ngClass]="{ 'rotate-180': item.show }"></i>
+            </div>
+
+            <!-- Table -->
+            <div *ngIf="item.show" class="px-3 sm:px-4 pb-4 animate-fadeIn">
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-[260px] border border-gray-200 rounded-lg overflow-hidden">
+                  <thead class="bg-blue-50">
+                    <tr>
+                      <th class="px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium text-gray-600">Set</th>
+                      <th class="px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium text-gray-600">Weight</th>
+                      <th class="px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium text-gray-600">Reps</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y">
+                    <tr *ngFor="let row of item.records" class="hover:bg-gray-50">
+                      <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm">{{ row.set }}</td>
+                      <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm">{{ row.weight }}</td>
+                      <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm">{{ row.reps }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- No data -->
+      <div *ngIf="historyData.length === 0" class="text-gray-500 mt-8 text-base sm:text-lg">
+        No data available for this date.
+      </div>
+
+    </ng-container>
+
+    <!-- Future date -->
+    <ng-template #future>
+      <div class="text-red-500 mt-8 text-base sm:text-lg font-semibold">
+        Future date selected. No data available.
+      </div>
+    </ng-template>
+
+  </div>
+
+  <p-dialog header="Select Muscle To Track" [(visible)]="displayDialog" [modal]="true" [closable]="true"[style]="{width: '600px' }">
+    <app-muscle-names [selectedDate]="selectedDateObj"></app-muscle-names>
+  </p-dialog>
+  <app-footer></app-footer>
+</div>
